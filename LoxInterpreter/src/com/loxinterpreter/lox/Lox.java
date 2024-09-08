@@ -1,3 +1,8 @@
+package com.loxinterpreter.lox;
+
+import com.loxinterpreter.error.DefaultErrorReporter;
+import com.loxinterpreter.error.ErrorReporter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Lox {
-    static boolean hadError = false;
+    private static final ErrorReporter errorReporter = new DefaultErrorReporter();
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -27,12 +32,14 @@ public class Lox {
             String line = reader.readLine();
             if (line == null) break;
             run(line);
+            errorReporter.setHadError(false);
         }
     }
 
     public static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
+        if (errorReporter.hadError()) System.exit(65);
     }
 
     private static void run(String source) {
@@ -41,16 +48,6 @@ public class Lox {
 //
 //        for (Token token : tokens) {
 //            System.out.println(token);
-    }
-
-    static void error(int line, String message) {
-        report(line, "", message);
-    }
-
-    private static void report(int line, String where, String message) {
-        System.err.println(
-                "[line " + line + "] Error" + where + ": " + message);
-        hadError = true;
     }
 }
 
