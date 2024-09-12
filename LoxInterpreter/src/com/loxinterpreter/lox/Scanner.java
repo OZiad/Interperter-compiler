@@ -31,9 +31,6 @@ public class Scanner {
         return tokens;
     }
 
-    private char advance() {
-        return source.charAt(current++);
-    }
 
     private void addToken(TokenType type) {
         addToken(type, null);
@@ -57,10 +54,43 @@ public class Scanner {
             case '+' -> addToken(MINUS);
             case ';' -> addToken(SEMICOLON);
             case '*' -> addToken(STAR);
-            default -> {
-                errorReporter.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+            case '!' -> addToken(match('=') ? BANG_EQUAL : BANG);
+            case '=' -> addToken(match('=') ? EQUAL_EQUAL : EQUAL);
+            case '<' -> addToken(match('=') ? LESS_EQUAL : LESS);
+            case '>' -> addToken(match('=') ? GREATER_EQUAL : GREATER);
+            case '/' -> {
+                if (match('/')) {
+                    while (peek() != '\n' && !isAtEnd()) {
+                        advance();
+                    }
+                } else {
+                    addToken(SLASH);
+                }
             }
+            case ' ', '\r', '\t' -> {/* ignore white space */ }
+            case '\n' -> line++;
+            default -> errorReporter.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
         }
+    }
+
+    private char advance() {
+        return source.charAt(current++);
+    }
+
+    // only consumes if the next character matches the expected value
+    private boolean match(char expected) {
+        if (isAtEnd() || source.charAt(current) != expected) {
+            return false;
+        }
+        current++;
+        return true;
+    }
+
+    private char peek() {
+        if (isAtEnd()) {
+            return '\0';
+        }
+        return source.charAt(current);
     }
 
     private boolean isAtEnd() {
