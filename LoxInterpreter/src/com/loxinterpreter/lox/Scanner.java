@@ -68,8 +68,27 @@ public class Scanner {
             case ' ', '\r', '\t' -> {/* ignore white space */ }
             case '\n' -> line++;
             case '"' -> string();
-            default -> Lox.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+            default -> {
+                if (isDigit(c)) {
+                    number();
+                } else {
+
+                    Lox.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+                }
+            }
         }
+    }
+
+    private void number() {
+        while (isDigit(peek())) {
+            advance();
+        }
+        if (peek() == '.' && isDigit(peekNext())) {
+            do {
+                advance();
+            } while (isDigit(peek()));
+        }
+        addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
     private void string() {
@@ -83,7 +102,7 @@ public class Scanner {
             return;
         }
 
-        // The closing ".
+        // Consume the closing '"'
         advance();
 
         // Trim the surrounding quotes.
@@ -109,6 +128,17 @@ public class Scanner {
             return '\0';
         }
         return source.charAt(current);
+    }
+
+    private char peekNext() {
+        if (current + 1 >= source.length()) {
+            return '\0';
+        }
+        return source.charAt(current + 1);
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     private boolean isAtEnd() {
