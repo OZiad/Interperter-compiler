@@ -67,9 +67,28 @@ public class Scanner {
             }
             case ' ', '\r', '\t' -> {/* ignore white space */ }
             case '\n' -> line++;
-            default -> errorReporter.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+            case '"' -> string();
             default -> Lox.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
         }
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated string.");
+            return;
+        }
+
+        // The closing ".
+        advance();
+
+        // Trim the surrounding quotes.
+        String value = source.substring(start + 1, current - 1);
+        addToken(STRING, value);
     }
 
     private char advance() {
