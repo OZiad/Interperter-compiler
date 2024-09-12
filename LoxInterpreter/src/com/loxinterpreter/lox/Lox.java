@@ -13,6 +13,7 @@ import java.util.List;
 
 public class Lox {
     private static final ErrorReporter errorReporter = new DefaultErrorReporter();
+    static boolean hadError = false;
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -33,14 +34,14 @@ public class Lox {
             String line = reader.readLine();
             if (line == null) break;
             run(line);
-            errorReporter.setHadError(false);
+            hadError = false;
         }
     }
 
     public static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-        if (errorReporter.hadError()) System.exit(65);
+        if (hadError) System.exit(65);
     }
 
     private static void run(String source) {
@@ -50,5 +51,11 @@ public class Lox {
             System.out.println(token);
         }
     }
+
+    static void error(int line, String message) {
+        errorReporter.error(line, message);
+        hadError = true;
+    }
+
 }
 

@@ -1,7 +1,6 @@
 package com.loxinterpreter.lox;
 
 import com.loxinterpreter.error.DefaultErrorReporter;
-import com.loxinterpreter.error.ErrorReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ import static com.loxinterpreter.lox.TokenType.*;
 public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
-    private final ErrorReporter errorReporter = new DefaultErrorReporter();
     private int start = 0;
     private int current = 0;
     private int line = 1;
@@ -70,6 +68,7 @@ public class Scanner {
             case ' ', '\r', '\t' -> {/* ignore white space */ }
             case '\n' -> line++;
             default -> errorReporter.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+            default -> Lox.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
         }
     }
 

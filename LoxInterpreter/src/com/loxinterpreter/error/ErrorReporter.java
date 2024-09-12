@@ -10,9 +10,4 @@ public interface ErrorReporter {
     default void error(int line, String message) {
         report(line, "", message);
     }
-
-    boolean hadError();
-
-    void setHadError(boolean bool);
-
 }
