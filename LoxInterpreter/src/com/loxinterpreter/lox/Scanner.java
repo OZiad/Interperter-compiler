@@ -85,6 +85,12 @@ public class Scanner {
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
+                }
+                // c-style /*..*/ comments
+                else if (match('*')) {
+                    while (peek() != '*' && peekNext() != '/' && !isAtEnd()) {
+                        advance();
+                    }
                 } else {
                     addToken(SLASH);
                 }
