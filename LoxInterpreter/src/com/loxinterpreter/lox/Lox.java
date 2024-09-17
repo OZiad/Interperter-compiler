@@ -1,7 +1,7 @@
 package com.loxinterpreter.lox;
 
-import com.loxinterpreter.error.DefaultErrorReporter;
-import com.loxinterpreter.error.ErrorReporter;
+import com.loxinterpreter.errorreporter.DefaultErrorReporter;
+import com.loxinterpreter.errorreporter.ErrorReporter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +32,9 @@ public class Lox {
         while (true) {
             System.out.print("> ");
             String line = reader.readLine();
-            if (line == null) break;
+            if (line == null) {
+                break;
+            }
             run(line);
             hadError = false;
         }
@@ -41,7 +43,9 @@ public class Lox {
     public static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-        if (hadError) System.exit(65);
+        if (hadError) {
+            System.exit(65);
+        }
     }
 
     private static void run(String source) {

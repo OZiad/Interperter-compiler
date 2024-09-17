@@ -1,4 +1,4 @@
-package com.loxinterpreter.error;
+package com.loxinterpreter.errorreporter;
 
 public interface ErrorReporter {
 

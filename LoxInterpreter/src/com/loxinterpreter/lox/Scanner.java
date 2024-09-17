@@ -1,6 +1,6 @@
 package com.loxinterpreter.lox;
 
-import com.loxinterpreter.error.DefaultErrorReporter;
+import com.loxinterpreter.errorreporter.DefaultErrorReporter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
