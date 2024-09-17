@@ -24,14 +24,15 @@ public class GenerateAst {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package com.craftinginterpreters.lox;");
+        writer.println("package com.loxinterpreter.lox;");
         writer.println();
         writer.println("import java.util.List;");
         writer.println();
         writer.println("abstract class " + baseName + " {");
         for (String type : types) {
-            String className = type.split(":")[0].trim();
-            String fields = type.split(":")[1].trim();
+            String[] split = type.split(":");
+            String className = split[0].trim();
+            String fields = split[1].trim();
             defineType(writer, baseName, className, fields);
         }
         writer.println("}");
@@ -39,26 +40,25 @@ public class GenerateAst {
     }
 
     private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
-        writer.println("  static class " + className + " extends " +
-                baseName + " {");
-
-        // Constructor.
-        writer.println("    " + className + "(" + fieldList + ") {");
+        writer.println("  static class " + className + " extends " + baseName + " {");
 
         // Store parameters in fields.
         String[] fields = fieldList.split(", ");
+
+        // Fields.
+        for (String field : fields) {
+            writer.println("    final " + field + ";");
+        }
+
+        writer.println();
+
+        // Constructor.
+        writer.println("    " + className + "(" + fieldList + ") {");
         for (String field : fields) {
             String name = field.split(" ")[1];
             writer.println("      this." + name + " = " + name + ";");
         }
-
         writer.println("    }");
-
-        // Fields.
-        writer.println();
-        for (String field : fields) {
-            writer.println("    final " + field + ";");
-        }
 
         writer.println("  }");
     }
