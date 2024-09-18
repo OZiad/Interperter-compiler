@@ -17,11 +17,6 @@ abstract class Expr {
 
     static class Binary extends Expr {
 
-        @Override
-        <R> R accept(Visitor<R> visitor) {
-            return visitor.visitBinaryExpr(this);
-        }
-
         final Expr left;
         final Token operator;
         final Expr right;
@@ -31,42 +26,42 @@ abstract class Expr {
             this.operator = operator;
             this.right = right;
         }
-    }
-
-    static class Grouping extends Expr {
 
         @Override
         <R> R accept(Visitor<R> visitor) {
-            return visitor.visitGroupingExpr(this);
+            return visitor.visitBinaryExpr(this);
         }
+    }
+
+    static class Grouping extends Expr {
 
         final Expr expression;
 
         Grouping(Expr expression) {
             this.expression = expression;
         }
-    }
-
-    static class Literal extends Expr {
 
         @Override
         <R> R accept(Visitor<R> visitor) {
-            return visitor.visitLiteralExpr(this);
+            return visitor.visitGroupingExpr(this);
         }
+    }
+
+    static class Literal extends Expr {
 
         final Object value;
 
         Literal(Object value) {
             this.value = value;
         }
-    }
-
-    static class Unary extends Expr {
 
         @Override
         <R> R accept(Visitor<R> visitor) {
-            return visitor.visitUnaryExpr(this);
+            return visitor.visitLiteralExpr(this);
         }
+    }
+
+    static class Unary extends Expr {
 
         final Token operator;
         final Expr right;
@@ -74,6 +69,11 @@ abstract class Expr {
         Unary(Token operator, Expr right) {
             this.operator = operator;
             this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitUnaryExpr(this);
         }
     }
 }
