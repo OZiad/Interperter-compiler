@@ -1,7 +1,27 @@
 package com.loxinterpreter.lox;
 
 abstract class Expr {
+
+    abstract <R> R accept(Visitor<R> visitor);
+
+    interface Visitor<R> {
+        R visitBinaryExpr(Binary binary);
+
+        R visitGroupingExpr(Grouping grouping);
+
+        R visitLiteralExpr(Literal literal);
+
+        R visitUnaryExpr(Unary unary);
+
+    }
+
     static class Binary extends Expr {
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitBinaryExpr(this);
+        }
+
         final Expr left;
         final Token operator;
         final Expr right;
@@ -14,6 +34,12 @@ abstract class Expr {
     }
 
     static class Grouping extends Expr {
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitGroupingExpr(this);
+        }
+
         final Expr expression;
 
         Grouping(Expr expression) {
@@ -22,6 +48,12 @@ abstract class Expr {
     }
 
     static class Literal extends Expr {
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitLiteralExpr(this);
+        }
+
         final Object value;
 
         Literal(Object value) {
@@ -30,6 +62,12 @@ abstract class Expr {
     }
 
     static class Unary extends Expr {
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitUnaryExpr(this);
+        }
+
         final Token operator;
         final Expr right;
 
