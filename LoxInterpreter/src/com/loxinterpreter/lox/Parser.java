@@ -28,7 +28,6 @@ public class Parser {
         return equality();
     }
 
-    // 1 < 2
     private Expr equality() {
         return parseLeftAssociativeBinary(this::comparison, BANG_EQUAL, EQUAL_EQUAL);
     }
@@ -44,7 +43,6 @@ public class Parser {
     private Expr factor() {
         return parseLeftAssociativeBinary(this::unary, SLASH, STAR);
     }
-
 
     private Expr unary() {
         if (match(BANG, MINUS)) {
@@ -76,7 +74,6 @@ public class Parser {
         throw error(peek(), "Expect expression.");
     }
 
-    // 1 < 2
     private Expr parseLeftAssociativeBinary(Supplier<Expr> operandParser, TokenType... operators) {
         Expr expr = operandParser.get();
         while (match(operators)) {

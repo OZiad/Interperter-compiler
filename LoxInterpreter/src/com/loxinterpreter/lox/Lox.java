@@ -1,8 +1,5 @@
 package com.loxinterpreter.lox;
 
-import com.loxinterpreter.errorreporter.DefaultErrorReporter;
-import com.loxinterpreter.errorreporter.ErrorReporter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,10 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.loxinterpreter.errorreporter.ErrorReporter.report;
-
 public class Lox {
-    private static final ErrorReporter errorReporter = new DefaultErrorReporter();
     static boolean hadError = false;
 
     public static void main(String[] args) throws IOException {
@@ -64,8 +58,7 @@ public class Lox {
     }
 
     static void error(int line, String message) {
-        errorReporter.error(line, message);
-        hadError = true;
+        report(line, "", message);
     }
 
     static void error(Token token, String message) {
@@ -74,6 +67,12 @@ public class Lox {
         } else {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
+    }
+
+    private static void report(int line, String where, String message) {
+        System.err.println(
+                "[line " + line + "] Error" + where + ": " + message);
+        hadError = true;
     }
 }
 

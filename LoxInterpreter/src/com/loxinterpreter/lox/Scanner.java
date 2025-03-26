@@ -1,7 +1,5 @@
 package com.loxinterpreter.lox;
 
-import com.loxinterpreter.errorreporter.DefaultErrorReporter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,9 +65,9 @@ public class Scanner {
         char c = advance();
         switch (c) {
             case '(' -> addToken(LEFT_PAREN);
-            case ')' -> addToken(RIGHT_BRACE);
+            case ')' -> addToken(RIGHT_PAREN);
             case '[' -> addToken(LEFT_BRACE);
-            case ']' -> addToken(RIGHT_PAREN);
+            case ']' -> addToken(RIGHT_BRACE);
             case ',' -> addToken(COMMA);
             case '.' -> addToken(DOT);
             case '-' -> addToken(MINUS);
@@ -104,8 +102,7 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-
-                    Lox.error(line, DefaultErrorReporter.DEFAULT_UNEXPECTED_CHAR);
+                    Lox.error(line, "Unexpected character.");
                 }
             }
         }
