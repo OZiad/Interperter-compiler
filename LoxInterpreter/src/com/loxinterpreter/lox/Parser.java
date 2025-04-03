@@ -25,7 +25,11 @@ public class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return comma();
+    }
+
+    private Expr comma() {
+        return parseLeftAssociativeBinary(this::equality, COMMA);
     }
 
     private Expr equality() {
