@@ -29,7 +29,18 @@ public class Parser {
     }
 
     private Expr comma() {
-        return parseLeftAssociativeBinary(this::equality, COMMA);
+        return parseLeftAssociativeBinary(this::ternary, COMMA);
+    }
+
+    private Expr ternary() {
+        Expr expr = equality();
+        if (match(QUESTION_MARK)) {
+            Expr thenBranch = expression();
+            consume(COLON, "Expected ':' after then expression");
+            Expr elseBranch = ternary();
+            expr = new Expr.Ternary(expr, thenBranch, elseBranch);
+        }
+        return expr;
     }
 
     private Expr equality() {
