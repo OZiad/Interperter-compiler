@@ -43,8 +43,8 @@ public class Interpreter implements Expr.Visitor<Object> {
                     yield (double) left + (double) right;
                 }
 
-                if (left instanceof String && right instanceof String) {
-                    yield (String) left + (String) right;
+                if (left instanceof String || right instanceof String) {
+                    yield stringify(left) + stringify(right);
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             }
