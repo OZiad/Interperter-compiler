@@ -19,11 +19,11 @@ public class Interpreter implements Expr.Visitor<Object> {
             case BANG_EQUAL -> !isEqual(left, right);
             case EQUAL_EQUAL -> isEqual(left, right);
             case GREATER -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
                 yield (double) left > (double) right;
             }
             case GREATER_EQUAL -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
                 yield (double) left >= (double) right;
             }
             case LESS -> {
@@ -31,11 +31,11 @@ public class Interpreter implements Expr.Visitor<Object> {
                 yield (double) left < (double) right;
             }
             case LESS_EQUAL -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
                 yield (double) left <= (double) right;
             }
             case MINUS -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
                 yield (double) right - (double) left;
             }
             case PLUS -> {
@@ -49,11 +49,14 @@ public class Interpreter implements Expr.Visitor<Object> {
                 throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             }
             case SLASH -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
+                if ((Double) right == 0) {
+                    throw new RuntimeError(expr.operator, "Division by zero not allowed");
+                }
                 yield (double) left / (double) right;
             }
             case STAR -> {
-                checkNumberOperands(expr.operator, right, left);
+                checkNumberOperands(expr.operator, left, right);
                 yield (double) left * (double) right;
             }
             default -> null;
