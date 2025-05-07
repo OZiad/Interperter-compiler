@@ -72,7 +72,7 @@ public class Scanner {
             case '?' -> addToken(QUESTION_MARK);
             case '.' -> addToken(DOT);
             case '-' -> addToken(MINUS);
-            case '+' -> addToken(MINUS);
+            case '+' -> addToken(PLUS);
             case ';' -> addToken(SEMICOLON);
             case ':' -> addToken(COLON);
             case '*' -> addToken(STAR);
