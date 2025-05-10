@@ -1,14 +1,30 @@
 package com.loxinterpreter.lox;
 
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
 
-    void interpret(Expr expression) {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
     }
 
     @Override
@@ -63,14 +79,6 @@ public class Interpreter implements Expr.Visitor<Object> {
         };
     }
 
-    private void checkNumberOperands(Token operator, Object... operands) {
-        for (var operand : operands) {
-            if (!(operand instanceof Double)) {
-                throw new RuntimeError(operator, "Operand must be a number.");
-            }
-        }
-    }
-
 
     @Override
     public Object visitGroupingExpr(Expr.Grouping expr) {
@@ -103,7 +111,17 @@ public class Interpreter implements Expr.Visitor<Object> {
             return evaluate(expr.thenBranch);
         }
 
+
         return evaluate(expr.elseBranch);
+    }
+
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
+    private Object evaluate(Expr expression) {
+        return expression.accept(this);
     }
 
     private boolean isTruthy(Object object) {
@@ -114,11 +132,6 @@ public class Interpreter implements Expr.Visitor<Object> {
             return (boolean) object;
         }
         return true;
-    }
-
-
-    private Object evaluate(Expr expression) {
-        return expression.accept(this);
     }
 
     private boolean isEqual(Object a, Object b) {
@@ -144,4 +157,13 @@ public class Interpreter implements Expr.Visitor<Object> {
 
         return object.toString();
     }
+
+    private void checkNumberOperands(Token operator, Object... operands) {
+        for (var operand : operands) {
+            if (!(operand instanceof Double)) {
+                throw new RuntimeError(operator, "Operand must be a number.");
+            }
+        }
+    }
+
 }
